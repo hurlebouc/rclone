@@ -2,6 +2,7 @@
 package flatten_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -44,7 +45,7 @@ func TestIntegration(t *testing.T) {
 	if *fstest.RemoteName == "" {
 		name := "TestFlatten"
 		opt.RemoteName = name + ":"
-		tempDir := filepath.Join(os.TempDir(), "rclone-flatten-test")
+		tempDir := filepath.Join(os.TempDir(), fmt.Sprintf("rclone-flatten-test-%d", os.Getpid()))
 		opt.ExtraConfig = []fstests.ExtraConfigItem{
 			{Name: name, Key: "type", Value: "flatten"},
 			{Name: name, Key: "remote", Value: tempDir},
