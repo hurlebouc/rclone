@@ -24,6 +24,7 @@ import (
 	_ "github.com/rclone/rclone/backend/filelu"
 	_ "github.com/rclone/rclone/backend/filen"
 	_ "github.com/rclone/rclone/backend/filescom"
+	_ "github.com/rclone/rclone/backend/flatten"
 	_ "github.com/rclone/rclone/backend/ftp"
 	_ "github.com/rclone/rclone/backend/gofile"
 	_ "github.com/rclone/rclone/backend/googlecloudstorage"

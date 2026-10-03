@@ -1,0 +1,16 @@
+backend: flatten
+name: Flatten
+tier: Tier 4
+maintainers: None
+features_score: 1
+integration_tests: Passing
+data_integrity: None
+performance: Medium
+adoption: None
+docs: Full
+security: High
+virtual: true
+remote: 'TestFlattenLocal:'
+features: null
+hashes: null
+precision: null

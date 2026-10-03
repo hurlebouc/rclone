@@ -49,6 +49,7 @@ See the following for detailed instructions for
 - [FileLu Cloud Storage](/filelu/)
 - [Filen](/filen/)
 - [Files.com](/filescom/)
+- [Flatten](/flatten/) - flatten the file hierarchy into fixed-size file names
 - [FTP](/ftp/)
 - [Gofile](/gofile/)
 - [Google Cloud Storage](/googlecloudstorage/)
