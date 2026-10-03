@@ -1,0 +1,66 @@
+---
+# CI workflow for this fork: build, test and lint on every push and PR
+name: ci
+
+on:
+  push:
+    branches:
+      - '**'
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    timeout-minutes: 60
+    defaults:
+      run:
+        shell: bash
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '~1.27.0'
+          check-latest: true
+
+      - name: Install Libraries on Linux
+        run: |
+          sudo modprobe fuse
+          sudo chmod 666 /dev/fuse
+          sudo chown root:$USER /etc/fuse.conf
+          sudo apt-get update
+          sudo apt-get install -y fuse3 libfuse-dev pkg-config nfs-common
+          sudo rm -f /usr/local/bin/fusermount /usr/local/bin/fusermount3
+
+      - name: Build
+        run: make
+
+      - name: Quick test
+        run: make quicktest
+
+      - name: Race test
+        run: make racequicktest
+
+  lint:
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Install Go
+        uses: actions/setup-go@v7
+        with:
+          go-version: '~1.27.0'
+          check-latest: true
+
+      - name: Golangci-lint
+        uses: golangci/golangci-lint-action@v9
+        with:
+          version: latest
