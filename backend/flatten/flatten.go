@@ -400,7 +400,7 @@ func (f *Fs) putInto(ctx context.Context, remote string, in io.Reader, src fs.Ob
 	f.mu.Lock()
 	flat := f.flatNameFor(full)
 	f.mu.Unlock()
-	wrapped := object.NewStaticObjectInfo(flat, src.ModTime(), src.Size(), true, nil, f.base)
+	wrapped := object.NewStaticObjectInfo(flat, src.ModTime(ctx), src.Size(), true, nil, f.base)
 	obj, err := f.base.Put(ctx, in, wrapped, options...)
 	if err != nil {
 		return nil, err
@@ -607,7 +607,7 @@ func (o *Object) Update(ctx context.Context, in io.Reader, src fs.ObjectInfo, op
 		o.f.dirty = true
 	}
 	o.f.mu.Unlock()
-	wrapped := object.NewStaticObjectInfo(flat, src.ModTime(), src.Size(), true, nil, o.f.base)
+	wrapped := object.NewStaticObjectInfo(flat, src.ModTime(ctx), src.Size(), true, nil, o.f.base)
 	if err := o.Object.Update(ctx, in, wrapped, options...); err != nil {
 		return err
 	}
