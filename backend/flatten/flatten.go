@@ -173,7 +173,9 @@ func (f *Fs) loadIndex(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("failed to open flatten index: %w", err)
 	}
-	defer rc.Close()
+	defer func() {
+		_ = rc.Close()
+	}()
 	data, err := io.ReadAll(rc)
 	if err != nil {
 		return fmt.Errorf("failed to read flatten index: %w", err)
@@ -511,7 +513,9 @@ func (f *Fs) Copy(ctx context.Context, src fs.Object, remote string) (fs.Object,
 	if err != nil {
 		return nil, err
 	}
-	defer in.Close()
+	defer func() {
+		_ = in.Close()
+	}()
 	return f.putInto(ctx, remote, in, src, nil)
 }
 
