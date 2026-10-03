@@ -106,6 +106,7 @@ func NewFs(ctx context.Context, name, rpath string, m configmap.Mapper) (fs.Fs, 
 		name: name,
 		root: rpath,
 		opt:  *opt,
+		index: map[string]string{},
 	}
 	cache.PinUntilFinalized(f.base, f)
 	if err := f.loadIndex(ctx); err != nil {
@@ -186,6 +187,9 @@ func (f *Fs) loadIndex(ctx context.Context) error {
 	var index map[string]string
 	if err := json.Unmarshal(data, &index); err != nil {
 		return fmt.Errorf("failed to parse flatten index: %w", err)
+	}
+	if index == nil {
+		index = map[string]string{}
 	}
 	f.mu.Lock()
 	f.index = index
@@ -433,10 +437,8 @@ func (f *Fs) Put(ctx context.Context, in io.Reader, src fs.ObjectInfo, options .
 //
 // Shouldn't return an error if it already exists
 func (f *Fs) Mkdir(ctx context.Context, dir string) error {
-	// Directories other than the wrapped root are virtual and need no storage
-	if f.fullRemote(dir) != "" {
-		return nil
-	}
+	// Directories are virtual, but making one requires (and makes) the
+	// root of the wrapped remote to exist
 	return f.base.Mkdir(ctx, "")
 }
 
@@ -452,7 +454,11 @@ func (f *Fs) Rmdir(ctx context.Context, dir string) error {
 		return fs.ErrorDirectoryNotEmpty
 	}
 	if f.fullRemote(dir) != "" {
-		// Virtual directories leave no trace in the wrapped remote
+		// Virtual directories leave no trace in the wrapped remote,
+		// but removing them still requires the wrapped root to exist
+		if _, err := f.base.List(ctx, ""); err != nil {
+			return err
+		}
 		return nil
 	}
 	// Removing the wrapped root also removes the now useless index file

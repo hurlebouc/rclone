@@ -29,6 +29,7 @@ func TestIntegration(t *testing.T) {
 			"DirMove",
 			"DirSetModTime",
 			"Disconnect",
+			"ListP",
 			"MkdirMetadata",
 			"MergeDirs",
 			"OpenChunkWriter",
