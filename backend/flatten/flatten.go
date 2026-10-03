@@ -70,9 +70,9 @@ type Options struct {
 // Fs represents a wrapped fs.Fs.
 type Fs struct {
 	name     string
-	root     string // virtual sub-root within the index name space
-	base     fs.Fs  // wrapped remote holding the flat names and the index
-	opt       Options
+	root     string       // virtual sub-root within the index name space
+	base     fs.Fs         // wrapped remote holding the flat names and the index
+	opt      Options
 	features *fs.Features
 	wrapper  fs.Fs
 
