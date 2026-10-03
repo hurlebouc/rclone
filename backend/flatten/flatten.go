@@ -68,10 +68,13 @@ type Options struct {
 }
 
 // Fs represents a wrapped fs.Fs.
+//
+// The root is a virtual sub-root within the index name space and base
+// is the wrapped remote holding the flat names and the index.
 type Fs struct {
 	name     string
-	root     string       // virtual sub-root within the index name space
-	base     fs.Fs         // wrapped remote holding the flat names and the index
+	root     string
+	base     fs.Fs
 	opt      Options
 	features *fs.Features
 	wrapper  fs.Fs
