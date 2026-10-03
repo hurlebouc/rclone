@@ -102,10 +102,10 @@ func NewFs(ctx context.Context, name, rpath string, m configmap.Mapper) (fs.Fs, 
 		return nil, fmt.Errorf("failed to make remote %q to wrap: %w", opt.Remote, err)
 	}
 	f := &Fs{
-		base: baseFs,
-		name: name,
-		root: rpath,
-		opt:  *opt,
+		base:  baseFs,
+		name:  name,
+		root:  rpath,
+		opt:   *opt,
 		index: map[string]string{},
 	}
 	cache.PinUntilFinalized(f.base, f)
@@ -127,6 +127,7 @@ func NewFs(ctx context.Context, name, rpath string, m configmap.Mapper) (fs.Fs, 
 		CanHaveEmptyDirectories: false,
 	}).Fill(ctx, f).Mask(ctx, baseFs).WrapsFs(f, baseFs)
 	f.features.ListR = f.ListR
+	f.features.Purge = f.Purge
 	return f, err
 }
 
