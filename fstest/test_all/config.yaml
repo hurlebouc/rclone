@@ -151,6 +151,11 @@ backends:
    remote:   "TestCompressS3:"
    fastlist: false
 ## end compress
+## begin flatten
+ - backend:  "flatten"
+   remote:   "TestFlattenLocal:"
+   fastlist: true
+## end flatten
  - backend:  "drive"
    remote:   "TestDrive:"
    fastlist: true
