@@ -29,6 +29,15 @@ jobs:
           go-version: '~1.27.0'
           check-latest: true
 
+      - name: Install Libraries on Linux
+        run: |
+          sudo modprobe fuse
+          sudo chmod 666 /dev/fuse
+          sudo chown root:$USER /etc/fuse.conf
+          sudo apt-get update
+          sudo apt-get install -y fuse3 libfuse-dev pkg-config nfs-common
+          sudo rm -f /usr/local/bin/fusermount /usr/local/bin/fusermount3
+
       - name: Build
         run: make
 
