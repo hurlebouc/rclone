@@ -499,9 +499,26 @@ func (f *Fs) Purge(ctx context.Context, dir string) error {
 		if !found {
 			return fs.ErrorDirNotFound
 		}
-		return f.saveIndex(ctx)
+		if err := f.saveIndex(ctx); err != nil {
+			return err
+		}
+		// If nothing is left in the index, remove it along with the
+		// wrapped root, now unused by any flatten instance.
+		f.mu.RLock()
+		empty := len(f.index) == 0
+		f.mu.RUnlock()
+		if empty {
+			return f.removeIndexAndRoot(ctx)
+		}
+		return nil
 	}
 	// Purging the wrapped root also removes the index and the root itself
+	return f.removeIndexAndRoot(ctx)
+}
+
+// removeIndexAndRoot removes the index file and the root of the wrapped
+// remote, provided the index is empty.
+func (f *Fs) removeIndexAndRoot(ctx context.Context) error {
 	if indexObj, err := f.base.NewObject(ctx, IndexName); err == nil {
 		if err := indexObj.Remove(ctx); err != nil {
 			return err
