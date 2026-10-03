@@ -610,10 +610,11 @@ func (o *Object) String() string {
 }
 
 // Update in to the object with the modTime given of the given size.
+//
+// The remote of src is ignored: the object keeps its own remote.
 func (o *Object) Update(ctx context.Context, in io.Reader, src fs.ObjectInfo, options ...fs.OpenOption) error {
-	remote := src.Remote()
 	flat := o.Object.Remote()
-	full := o.f.fullRemote(remote)
+	full := o.f.fullRemote(o.remote)
 	o.f.mu.Lock()
 	if old, ok := o.f.index[full]; !ok || old != flat {
 		o.f.index[full] = flat
@@ -624,7 +625,6 @@ func (o *Object) Update(ctx context.Context, in io.Reader, src fs.ObjectInfo, op
 	if err := o.Object.Update(ctx, in, wrapped, options...); err != nil {
 		return err
 	}
-	o.remote = remote
 	return o.f.saveIndex(ctx)
 }
 
